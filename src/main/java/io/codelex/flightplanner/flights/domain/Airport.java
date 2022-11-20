@@ -1,10 +1,20 @@
 package io.codelex.flightplanner.flights.domain;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class Airport {
+    @Valid
+    @NotBlank
     private String country;
+    @Valid
+    @NotBlank
     private String city;
+    @Valid
+    @NotBlank
     private String airport;
 
     public Airport(String country, String city, String airport) {
@@ -40,14 +50,13 @@ public class Airport {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Airport airport1 = (Airport) o;
-        return country.equals(airport1.country) && city.equals(airport1.city) && airport.equals(airport1.airport);
+        if (!(o instanceof Airport airport1)) return false;
+        return getCountry().equals(airport1.getCountry()) && getCity().equals(airport1.getCity()) && getAirport().equals(airport1.getAirport());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(country, city, airport);
+        return Objects.hash(getCountry(), getCity(), getAirport());
     }
 
     @Override
@@ -57,5 +66,11 @@ public class Airport {
                 ", city='" + city + '\'' +
                 ", airport='" + airport + '\'' +
                 '}';
+    }
+
+    public boolean areAirportsEqual(Airport anotherAirport) {
+        return getCountry().trim().equalsIgnoreCase(anotherAirport.getCountry().trim()) &&
+                getCity().trim().equalsIgnoreCase(anotherAirport.getCity().trim()) &&
+                getAirport().trim().equalsIgnoreCase(anotherAirport.getAirport().trim());
     }
 }

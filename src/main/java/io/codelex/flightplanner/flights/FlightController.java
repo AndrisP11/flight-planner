@@ -7,6 +7,7 @@ import io.codelex.flightplanner.flights.domain.SearchFlightResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class FlightController {
 
     @PutMapping("/admin-api/flights")
     @ResponseStatus(HttpStatus.CREATED)
-    public Flight addFlights(@RequestBody Flight flight) {
+    public Flight addFlights(@Valid @RequestBody Flight flight) {
         return service.addFlights(flight);
     }
 

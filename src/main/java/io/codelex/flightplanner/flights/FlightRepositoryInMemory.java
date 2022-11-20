@@ -20,7 +20,7 @@ public class FlightRepositoryInMemory {
         this.flights = flights;
     }
 
-    public Flight addFlights(Flight flight) {
+    public synchronized Flight addFlights(Flight flight) {
         flights.add(flight);
         return flight;
     }
@@ -33,7 +33,7 @@ public class FlightRepositoryInMemory {
         flights.clear();
     }
 
-    public void deleteFlights(int flightId) {
+    public synchronized void deleteFlights(int flightId) {
         List<Flight> tempList = flights.stream().filter(flight -> flight.getId() == flightId).toList();
         if (tempList.size() == 0) {
             throw new ResponseStatusException(HttpStatus.OK);
@@ -53,12 +53,7 @@ public class FlightRepositoryInMemory {
 
     public List<Airport> searchAirport(String search) {
         String phrase = search.toUpperCase().trim();
-        List<Flight> tempList = flights.stream().filter(flight -> flight.getFrom().getAirport().toUpperCase().startsWith(phrase) ||
-                flight.getFrom().getCity().toUpperCase().startsWith(phrase) ||
-                flight.getFrom().getCountry().toUpperCase().startsWith(phrase) ||
-                flight.getTo().getAirport().toUpperCase().startsWith(phrase) ||
-                flight.getTo().getCity().toUpperCase().startsWith(phrase) ||
-                flight.getTo().getCountry().toUpperCase().startsWith(phrase)).toList();
+        List<Flight> tempList = findAllAirports(phrase);
         if (tempList.size() == 0) {
             throw new ResponseStatusException(HttpStatus.OK);
         } else {
@@ -70,17 +65,20 @@ public class FlightRepositoryInMemory {
         }
     }
 
+    private List<Flight> findAllAirports(String phrase) {
+        return flights.stream().filter(flight -> flight.getFrom().getAirport().toUpperCase().startsWith(phrase) ||
+                flight.getFrom().getCity().toUpperCase().startsWith(phrase) ||
+                flight.getFrom().getCountry().toUpperCase().startsWith(phrase) ||
+                flight.getTo().getAirport().toUpperCase().startsWith(phrase) ||
+                flight.getTo().getCity().toUpperCase().startsWith(phrase) ||
+                flight.getTo().getCountry().toUpperCase().startsWith(phrase)).toList();
+    }
+
     public SearchFlightResult searchFlight(SearchFlight searchFlight) {
-        if (searchFlight.getFrom() == null ||
-                searchFlight.getTo() == null ||
-                searchFlight.getDepartureDate() == null ||
-                searchFlight.getFrom().equals(searchFlight.getTo())) {
+        if (isSearchFlightNull(searchFlight)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else {
-            List<Flight> tempList = flights.stream()
-                    .filter(flight -> flight.getFrom().getAirport().equalsIgnoreCase(searchFlight.getFrom()) &&
-                            flight.getTo().getAirport().equalsIgnoreCase(searchFlight.getTo()) &&
-                            flight.getDepartureTime().equalsIgnoreCase(searchFlight.getDepartureDate())).toList();
+            List<Flight> tempList = findSearchedFlights(searchFlight);
             if (tempList.size() == 0) {
                 int page = 0;
                 int totalItems = 0;
@@ -91,6 +89,20 @@ public class FlightRepositoryInMemory {
                 return new SearchFlightResult(page, totalItems, tempList);
             }
         }
+    }
+
+    private boolean isSearchFlightNull(SearchFlight searchFlight) {
+        return searchFlight.getFrom() == null ||
+                searchFlight.getTo() == null ||
+                searchFlight.getDepartureDate() == null ||
+                searchFlight.getFrom().equals(searchFlight.getTo());
+    }
+
+    private List<Flight> findSearchedFlights(SearchFlight searchFlight) {
+        return flights.stream()
+                .filter(flight -> flight.getFrom().getAirport().equalsIgnoreCase(searchFlight.getFrom()) &&
+                        flight.getTo().getAirport().equalsIgnoreCase(searchFlight.getTo()) &&
+                        flight.getDepartureTime().equalsIgnoreCase(searchFlight.getDepartureDate())).toList();
     }
 
     public Flight findFlightById(int flightId) {

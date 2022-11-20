@@ -1,16 +1,31 @@
 package io.codelex.flightplanner.flights.domain;
 
+import org.springframework.context.annotation.Bean;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 public class Flight {
     private static int count = 0;
     private int id;
+    @Valid
+    @NotNull
     Airport to;
+    @Valid
+    @NotNull
     Airport from;
+    @Valid
+    @NotBlank
     private String carrier;
-
+    @Valid
+    @NotBlank
     private String departureTime;
-
+    @Valid
+    @NotBlank
     private String arrivalTime;
 
 
@@ -95,5 +110,13 @@ public class Flight {
     @Override
     public int hashCode() {
         return Objects.hash(getTo(), getFrom(), getCarrier(), getDepartureTime(), getArrivalTime(), getId());
+    }
+
+    public boolean areFlightsEqual(Flight anotherFlight) {
+        return getFrom().equals(anotherFlight.getFrom()) &&
+                getTo().equals(anotherFlight.getTo()) &&
+                getCarrier().equals(anotherFlight.getCarrier()) &&
+                getArrivalTime().equals(anotherFlight.getArrivalTime()) &&
+                getDepartureTime().equals(anotherFlight.getDepartureTime());
     }
 }

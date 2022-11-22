@@ -2,8 +2,8 @@ package io.codelex.flightplanner.flights;
 
 import io.codelex.flightplanner.flights.domain.Airport;
 import io.codelex.flightplanner.flights.domain.Flight;
-import io.codelex.flightplanner.flights.domain.SearchFlight;
-import io.codelex.flightplanner.flights.domain.SearchFlightResult;
+import io.codelex.flightplanner.flights.dto.SearchFlight;
+import io.codelex.flightplanner.flights.dto.SearchFlightResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;

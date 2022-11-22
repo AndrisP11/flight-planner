@@ -2,8 +2,8 @@ package io.codelex.flightplanner.flights;
 
 import io.codelex.flightplanner.flights.domain.Airport;
 import io.codelex.flightplanner.flights.domain.Flight;
-import io.codelex.flightplanner.flights.domain.SearchFlight;
-import io.codelex.flightplanner.flights.domain.SearchFlightResult;
+import io.codelex.flightplanner.flights.dto.SearchFlight;
+import io.codelex.flightplanner.flights.dto.SearchFlightResult;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class FlightServiceInMemory implements FlightService {
     }
 
     @Override
-    public Flight addFlights(Flight flight) {
+    public synchronized Flight addFlights(Flight flight) {
         checkIfSame(flight);
         checkSameAirport(flight);
         checkDate(flight);

@@ -1,16 +1,31 @@
 package io.codelex.flightplanner.flights.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 
 public class SearchFlight {
+    @Valid
+    @NotNull
     private String from;
+    @Valid
+    @NotNull
     private String to;
-    private String departureDate;
+    @Valid
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate departureDate;
 
     public SearchFlight(String from, String to, String departureDate) {
         this.from = from;
         this.to = to;
-        this.departureDate = departureDate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        this.departureDate = LocalDate.parse(departureDate, formatter);
     }
 
     public String getFrom() {
@@ -29,11 +44,11 @@ public class SearchFlight {
         this.to = to;
     }
 
-    public String getDepartureDate() {
+    public LocalDate getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(String departureDate) {
+    public void setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 
@@ -41,7 +56,7 @@ public class SearchFlight {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SearchFlight that)) return false;
-        return Objects.equals(getFrom(), that.getFrom()) && Objects.equals(getTo(), that.getTo()) && Objects.equals(getDepartureDate(), that.getDepartureDate());
+        return getFrom().equals(that.getFrom()) && getTo().equals(that.getTo()) && getDepartureDate().equals(that.getDepartureDate());
     }
 
     @Override
@@ -54,7 +69,7 @@ public class SearchFlight {
         return "SearchFlight{" +
                 "from='" + from + '\'' +
                 ", to='" + to + '\'' +
-                ", departureDate='" + departureDate + '\'' +
+                ", departureDate=" + departureDate +
                 '}';
     }
 }

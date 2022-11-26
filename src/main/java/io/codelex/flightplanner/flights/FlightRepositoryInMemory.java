@@ -102,7 +102,7 @@ public class FlightRepositoryInMemory {
         return flights.stream()
                 .filter(flight -> flight.getFrom().getAirport().equalsIgnoreCase(searchFlight.getFrom()) &&
                         flight.getTo().getAirport().equalsIgnoreCase(searchFlight.getTo()) &&
-                        flight.getDepartureTime().equalsIgnoreCase(searchFlight.getDepartureDate())).toList();
+                        flight.getDepartureTime().toString().matches(searchFlight.getDepartureDate().toString())).toList();
     }
 
     public Flight findFlightById(int flightId) {

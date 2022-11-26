@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @ConditionalOnProperty(prefix = "myapp", name = "appmode", havingValue = "inmemory")
@@ -44,10 +41,8 @@ public class FlightServiceInMemory implements FlightService {
     }
 
     private void checkDate(Flight flight) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-        LocalDateTime depart = LocalDateTime.parse(flight.getDepartureTime(), formatter);
-        LocalDateTime arrive = LocalDateTime.parse(flight.getArrivalTime(), formatter);
-        if (!arrive.isAfter(depart) || arrive.isEqual(depart)) {
+        if (!flight.getArrivalTime().isAfter(flight.getDepartureTime()) ||
+                flight.getArrivalTime().isEqual(flight.getDepartureTime())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }

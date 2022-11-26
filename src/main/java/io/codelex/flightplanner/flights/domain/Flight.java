@@ -1,12 +1,13 @@
 package io.codelex.flightplanner.flights.domain;
 
-import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Flight {
@@ -22,22 +23,23 @@ public class Flight {
     @NotBlank
     private String carrier;
     @Valid
-    @NotBlank
-    private String departureTime;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime departureTime;
     @Valid
-    @NotBlank
-    private String arrivalTime;
-
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime arrivalTime;
 
     public Flight(Airport to, Airport from, String carrier, String departureTime, String arrivalTime) {
         this.id = count++;
         this.to = to;
         this.from = from;
         this.carrier = carrier;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+        this.departureTime = LocalDateTime.parse(departureTime, formatter);
+        this.arrivalTime = LocalDateTime.parse(arrivalTime, formatter);
     }
-
 
     public int getId() {
         return id;
@@ -71,33 +73,20 @@ public class Flight {
         this.carrier = carrier;
     }
 
-    public String getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(String departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public String getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(String arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", to=" + to +
-                ", from=" + from +
-                ", carrier='" + carrier + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", arrivalTime='" + arrivalTime + '\'' +
-                '}';
     }
 
     @Override
@@ -109,7 +98,19 @@ public class Flight {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTo(), getFrom(), getCarrier(), getDepartureTime(), getArrivalTime(), getId());
+        return Objects.hash(getId(), getTo(), getFrom(), getCarrier(), getDepartureTime(), getArrivalTime());
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", to=" + to +
+                ", from=" + from +
+                ", carrier='" + carrier + '\'' +
+                ", departureTime=" + departureTime +
+                ", arrivalTime=" + arrivalTime +
+                '}';
     }
 
     public boolean areFlightsEqual(Flight anotherFlight) {

@@ -2,8 +2,6 @@ package io.codelex.flightplanner.flights.domain;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class Airport {

@@ -2,6 +2,7 @@ package io.codelex.flightplanner.flights.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,29 +11,39 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
 
+@Entity
+@Table(name = "flight")
 public class Flight {
-    private static int count = 0;
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     @Valid
     @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "airport_to")
     Airport to;
     @Valid
     @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "airport_from")
     Airport from;
     @Valid
     @NotBlank
+    @Column(name = "carrier")
     private String carrier;
     @Valid
     @NotNull
+    @Column(name = "departure")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
     @Valid
     @NotNull
+    @Column(name = "arrival")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime arrivalTime;
 
     public Flight(Airport to, Airport from, String carrier, String departureTime, String arrivalTime) {
-        this.id = count++;
+        this.id = getId();
         this.to = to;
         this.from = from;
         this.carrier = carrier;
@@ -41,11 +52,15 @@ public class Flight {
         this.arrivalTime = LocalDateTime.parse(arrivalTime, formatter);
     }
 
-    public int getId() {
+    public Flight() {
+
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -93,7 +108,7 @@ public class Flight {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Flight flight)) return false;
-        return getId() == flight.getId() && getTo().equals(flight.getTo()) && getFrom().equals(flight.getFrom()) && getCarrier().equals(flight.getCarrier()) && getDepartureTime().equals(flight.getDepartureTime()) && getArrivalTime().equals(flight.getArrivalTime());
+        return getId().equals(flight.getId()) && getTo().equals(flight.getTo()) && getFrom().equals(flight.getFrom()) && getCarrier().equals(flight.getCarrier()) && getDepartureTime().equals(flight.getDepartureTime()) && getArrivalTime().equals(flight.getArrivalTime());
     }
 
     @Override
@@ -114,8 +129,12 @@ public class Flight {
     }
 
     public boolean areFlightsEqual(Flight anotherFlight) {
-        return getFrom().equals(anotherFlight.getFrom()) &&
-                getTo().equals(anotherFlight.getTo()) &&
+        return getFrom().getCountry().equals(anotherFlight.getFrom().getCountry()) &&
+                getFrom().getCity().equals(anotherFlight.getFrom().getCity()) &&
+                getFrom().getAirport().equals(anotherFlight.getFrom().getAirport()) &&
+                getTo().getCountry().equals(anotherFlight.getTo().getCountry()) &&
+                getTo().getCity().equals(anotherFlight.getTo().getCity()) &&
+                getTo().getAirport().equals(anotherFlight.getTo().getAirport()) &&
                 getCarrier().equals(anotherFlight.getCarrier()) &&
                 getArrivalTime().equals(anotherFlight.getArrivalTime()) &&
                 getDepartureTime().equals(anotherFlight.getDepartureTime());

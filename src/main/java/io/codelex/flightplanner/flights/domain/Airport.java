@@ -8,9 +8,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "airport")
 public class Airport {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer airport_id;
     @Valid
     @NotBlank
     @Column(name = "country")
@@ -19,13 +16,12 @@ public class Airport {
     @NotBlank
     @Column(name = "city")
     private String city;
-    @Valid
+    @Id
     @NotBlank
-    @Column(name = "airport")
+    @JoinColumn(name = "airport_id")
     private String airport;
 
     public Airport(String country, String city, String airport) {
-        this.airport_id = getAirport_id();
         this.country = country;
         this.city = city;
         this.airport = airport;
@@ -33,14 +29,6 @@ public class Airport {
 
     public Airport() {
 
-    }
-
-    public Integer getAirport_id() {
-        return airport_id;
-    }
-
-    public void setAirport_id(Integer airport_id) {
-        this.airport_id = airport_id;
     }
 
     public String getCountry() {
@@ -71,19 +59,18 @@ public class Airport {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Airport airport1)) return false;
-        return getAirport_id().equals(airport1.getAirport_id()) && getCountry().equals(airport1.getCountry()) && getCity().equals(airport1.getCity()) && getAirport().equals(airport1.getAirport());
+        return getCountry().equals(airport1.getCountry()) && getCity().equals(airport1.getCity()) && getAirport().equals(airport1.getAirport());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAirport_id(), getCountry(), getCity(), getAirport());
+        return Objects.hash(getCountry(), getCity(), getAirport());
     }
 
     @Override
     public String toString() {
         return "Airport{" +
-                "airport_id=" + airport_id +
-                ", country='" + country + '\'' +
+                "country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", airport='" + airport + '\'' +
                 '}';

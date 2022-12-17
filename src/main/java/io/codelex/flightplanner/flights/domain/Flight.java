@@ -16,15 +16,15 @@ import java.util.Objects;
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     @Valid
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_to")
     Airport to;
     @Valid
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "airport_from")
     Airport from;
     @Valid
@@ -56,11 +56,11 @@ public class Flight {
 
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -136,7 +136,8 @@ public class Flight {
                 getTo().getCity().equals(anotherFlight.getTo().getCity()) &&
                 getTo().getAirport().equals(anotherFlight.getTo().getAirport()) &&
                 getCarrier().equals(anotherFlight.getCarrier()) &&
-                getArrivalTime().equals(anotherFlight.getArrivalTime()) &&
-                getDepartureTime().equals(anotherFlight.getDepartureTime());
+                getArrivalTime().isEqual(anotherFlight.getArrivalTime()) &&
+                getDepartureTime().isEqual(anotherFlight.getDepartureTime());
     }
+
 }

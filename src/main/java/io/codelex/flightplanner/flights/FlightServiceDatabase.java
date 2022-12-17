@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @ConditionalOnProperty(prefix = "myapp", name = "appmode", havingValue = "database")
@@ -20,9 +21,8 @@ public class FlightServiceDatabase implements FlightService {
     @Autowired
     private FlightRepositoryDatabase flightRepositoryDatabase;
 
-    //getting all student records
     public List<Flight> getFlights() {
-        return new ArrayList<>(flightRepositoryDatabase.findAll());
+        return new ArrayList<>(flightRepositoryDatabase.findByIdNotNull());
     }
 
     public synchronized Flight addFlights(Flight flight) {
@@ -64,15 +64,17 @@ public class FlightServiceDatabase implements FlightService {
         } else {
             flightRepositoryDatabase.delete(tempList.get(0));
         }
+
     }
 
 
     public Flight fetchFlight(int flightId) {
-        List<Flight> tempList = getFlights().stream().filter(flight -> flight.getId() == flightId).toList();
-        if (tempList.size() == 0) {
+        Long searchFlightID = (long) flightId;
+        Optional<Flight> tempList = flightRepositoryDatabase.findById(searchFlightID);
+        if (tempList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            return tempList.get(0);
+            return tempList.get();
         }
     }
 
@@ -132,11 +134,12 @@ public class FlightServiceDatabase implements FlightService {
     }
 
     public Flight findFlightById(int flightId) {
-        List<Flight> tempList = getFlights().stream().filter(flight -> flight.getId() == flightId).toList();
-        if (tempList.size() == 0) {
+        Long searchFlightID = (long) flightId;
+        Optional<Flight> tempList = flightRepositoryDatabase.findById(searchFlightID);
+        if (tempList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            return tempList.get(0);
+            return tempList.get();
         }
     }
 }

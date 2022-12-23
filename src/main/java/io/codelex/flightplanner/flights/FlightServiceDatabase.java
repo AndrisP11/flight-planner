@@ -1,5 +1,6 @@
 package io.codelex.flightplanner.flights;
 
+import io.codelex.flightplanner.flights.dbRepository.AirportRepository;
 import io.codelex.flightplanner.flights.domain.Airport;
 import io.codelex.flightplanner.flights.domain.Flight;
 import io.codelex.flightplanner.flights.dto.SearchFlight;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +21,14 @@ import java.util.Optional;
 @ConditionalOnProperty(prefix = "myapp", name = "appmode", havingValue = "database")
 public class FlightServiceDatabase implements FlightService {
 
+    private final FlightRepositoryDatabase flightRepositoryDatabase;
+    private final AirportRepository airportRepository;
+
     @Autowired
-    private FlightRepositoryDatabase flightRepositoryDatabase;
+    public FlightServiceDatabase(FlightRepositoryDatabase flightRepositoryDatabase, AirportRepository airportRepository) {
+        this.flightRepositoryDatabase = flightRepositoryDatabase;
+        this.airportRepository = airportRepository;
+    }
 
     public List<Flight> getFlights() {
         return new ArrayList<>(flightRepositoryDatabase.findByIdNotNull());
@@ -29,6 +38,17 @@ public class FlightServiceDatabase implements FlightService {
         checkIfSame(flight);
         checkSameAirport(flight);
         checkDate(flight);
+
+        Airport fromAirport = flight.getFrom();
+        Airport toAirport = flight.getTo();
+
+
+        fromAirport = airportRepository.save(fromAirport);
+        toAirport = airportRepository.save(toAirport);
+
+
+        flight.setFrom(fromAirport);
+        flight.setTo(toAirport);
         flightRepositoryDatabase.save(flight);
         return flight;
     }

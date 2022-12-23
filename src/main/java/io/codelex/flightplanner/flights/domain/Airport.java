@@ -18,7 +18,7 @@ public class Airport {
     private String city;
     @Id
     @NotBlank
-    @JoinColumn(name = "airport_id")
+    @Column(name = "airport")
     private String airport;
 
     public Airport(String country, String city, String airport) {

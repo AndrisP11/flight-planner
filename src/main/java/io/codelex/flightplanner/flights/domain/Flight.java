@@ -19,12 +19,12 @@ public class Flight {
     private Long id;
     @Valid
     @NotNull
-    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "airport_to")
     Airport to;
     @Valid
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "airport_from")
     Airport from;
     @Valid
@@ -43,7 +43,6 @@ public class Flight {
     private LocalDateTime arrivalTime;
 
     public Flight(Airport to, Airport from, String carrier, String departureTime, String arrivalTime) {
-        this.id = getId();
         this.to = to;
         this.from = from;
         this.carrier = carrier;

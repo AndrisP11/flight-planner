@@ -12,10 +12,10 @@ CREATE TABLE airport
 CREATE TABLE flight
 (
     id           LONG PRIMARY KEY,
-    airport_to   VARCHAR(255) NOT NULL,
-    airport_from VARCHAR(255) NOT NULL,
-    FOREIGN KEY (airport_to) REFERENCES airport (airport) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (airport_from) REFERENCES airport (airport) ON DELETE CASCADE ON UPDATE CASCADE,
+    airport_to   VARCHAR(255) ,
+    airport_from VARCHAR(255) ,
+    FOREIGN KEY (airport_to) REFERENCES airport (airport)  ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (airport_from) REFERENCES airport (airport) ON DELETE SET NULL ON UPDATE CASCADE,
     carrier      VARCHAR(255) NOT NULL,
     departure    TIMESTAMP    NOT NULL,
     arrival      TIMESTAMP    NOT NULL

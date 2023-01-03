@@ -1,0 +1,6 @@
+title: "Flight Planner"
+description: "Application which can store flights between different airports and allows you to search them."
+project_url: "https://github.com/AndrisP11/flight-planner/tree/master"
+repo: "flight-planner"
+owner: "AndrisP11"
+image_list: ["https://raw.githubusercontent.com/AndrisP11/flight-planner/InMemory/src/assets/images/Airport.jpg", "https://raw.githubusercontent.com/AndrisP11/flight-planner/InMemory/src/assets/images/Application.jpg", "https://raw.githubusercontent.com/AndrisP11/flight-planner/InMemory/src/assets/images/Flights.jpg", "https://raw.githubusercontent.com/AndrisP11/flight-planner/InMemory/src/assets/images/SQL.jpg"]
